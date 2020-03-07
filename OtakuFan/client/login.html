@@ -1,0 +1,97 @@
+
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>login</title>
+<link href="../css/unionstyle.css" rel="stylesheet" type="text/css">
+<link href="../css/logostyle.css" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="../js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="../js/logo/custom.js"></script>
+<script type="text/javascript" src="../js/logo/pngFix.js"></script>
+<script type="text/javascript">
+  DD_belatedPNG.fix('.png-fix');
+</script>
+<script type="text/javascript">
+	<!--
+	function cNull(){
+		if (document.logf.user_id.value==""){
+			alert("用户名不能为空!");
+			document.logf.user_id.focus();
+			return false;
+		}
+		if (document.logf.pas_word.value==""){
+			alert("密码不能为空!");
+			document.logf.pas_word.focus();
+			return false;
+		}
+		//if (document.form1.safecode.value==""){
+		//	alert("验证码不能为空!");
+		//	document.form1.safecode.focus();
+		//	return false;
+		//}
+
+		return true;
+	}
+	// -->
+	</script>
+</head>
+
+<body>
+            
+<div style=" height:auto;width:320px;">
+<form name="logf" id="logf" action="../server/login.php" target="_top" method="post" onSubmit="javascript:return cNull();">
+
+<table width="320" border="0" align="center">
+    <tr>
+    <td>
+
+    <div id="container2">
+    <div id="overlay2" class="png-fix">
+
+              <img src="../pageFile/logo/example2.png" class="png-fix" style="border:medium none;"/>
+
+    </div>
+	</div>
+
+</td>
+  </tr>
+  <tr>
+    <td><input name="user_id" type="text" class="inputdi inputid_blu" placeholder="用户名" style="margin-top:20px;background-image:url(../pageFile/img/per.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+  <tr>
+    <td><input name="pas_word" type="password" class="inputdi inputid_blu" placeholder="密码" style="background-image:url(../pageFile/img/loc.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+  <tr>
+    <td>
+    <div>
+    <!--input name="as_login" type="checkbox" class="" id="as_login" value="1"下次自动登录-->
+    
+    </div>
+      </td>
+  </tr>
+  <tr>
+    <td >
+      <input name="login_in" id="login_in" type="submit" class="butt butt_info butcolor_blu" value="登录" style="margin-right:12px;">
+      <input name="regis_in" id="regis_in" type="button" class="butt butt_info butcolor_org" value="注册" style="margin-right:0px;" onMouseUp="calltoreg()">
+   	</td>
+  </tr>
+  <tr>
+  <br>
+    <td><a href="findb.html" target="_self" class="font_info">忘记密码？点我找回</a></td>
+  </tr>
+
+</table>
+
+
+</form>
+</div>
+<script>
+
+function calltoreg()
+{
+	location.replace("regist.html");
+}
+</script>
+</body>
+</html>

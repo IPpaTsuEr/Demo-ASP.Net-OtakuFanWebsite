@@ -1,0 +1,277 @@
+﻿<!doctype html>
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+<meta charset="utf-8">
+<title>聊天室</title>
+
+<script src="../../eff/js/jquery-2.0.3.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
+<script type="text/javascript" src="edit/ckeditor.js"></script>
+<script>
+	var id=$.cookie('uid');
+	var ni=$.cookie('nick');
+	var po=$.cookie('portrait');
+</script>
+<style>
+dd{
+	
+	display:block;
+	}
+section>div{
+	margin:20px 10px;
+	}
+section div>div{
+	margin:12px;}
+.bsdc{
+	background-color: rgba(224, 230, 231,0.3);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.8),rgba(221,221,221,0.4) );
+    background-repeat: repeat-x;
+	}
+.bsdc:hover {
+    background-color: rgba(5, 145, 245,0.6);
+    text-decoration: none;
+    background-position: 0px -1px;
+    transition: background-position 0.1s linear 0s;
+	background-color: rgb(5, 150, 245);
+}
+#linl{
+		right:-175px;
+	}
+#linl:hover{
+		right:0px;
+	}
+nav>ul>li{ width:100%;height:45px; display:block; line-height:45px;padding-left:20px;border-bottom: 1px solid rgb(68, 68, 68); background-color:rgba(221,221,221,0.7); line-height:45px; }
+nav>ul>li:hover{background-image:linear-gradient(to bottom, rgba(255,255,255,0.9),rgba(221,221,221,0.6) );}
+nav>h4{
+	color: rgb(0,0,0);
+	background: none repeat scroll 0% 0%;
+	background-image:linear-gradient(to bottom, rgba(255,255,255,0.9),rgba(221,221,221,0.7) );
+	border-bottom: 1px solid rgb(112, 112, 112);
+	border-radius:5px;
+	padding: 5px 5px 5px 0px;
+	font-size:18px;
+	line-height:35px;
+	position: relative;
+	height:32px;
+	}
+nav>h4>a{
+	text-decoration: none;
+	position: absolute;
+	right: 5px;
+	font-size: 140%;
+	}
+#onpan{transform:translateY(-23px);
+-webkit-transform:translateY(-23px);}
+#onpan:hover{transform:translateY(0px);
+-webkit-transform:translateY(0px);}
+</style>
+</head>
+
+<body onLoad="sendajax();ajaxpeo();" style="background-image:url(../../pageFile/img/desktop_bg.jpg); background-size:cover; background-position:center; background-attachment:fixed;">
+<style>
+
+</style>
+
+
+
+    <section style="width:100%;margin-bottom:0px;margin-top:35px; padding:0px; clear:both; min-height:200px; height:auto;background-color:rgba(254,254,254,0.8); border-radius:5px; overflow:auto;" id="meslist">
+    
+    </section>
+ <div id="onpan" style="margin-left:-180px; padding:0px;position:fixed;top:0px;left:50%; width:360px; height:30px; background-color:rgba(254,254,254,0.8); z-index:5555; border-radius:0px 0px 5px 5px; line-height:30px; text-align:center;box-shadow:rgba(0,0,0,0.5) 1px 1px 10px 1px;">
+	<span style="float:left; margin-left:50px;">全服聊天室</span>
+	<a href="#" onClick="stopajax();parent.reback('page-2')" style="float:right; margin-right:50px; text-decoration:none;">返回首页</a>
+</div>
+<div id="sendpanel" style="width:100%;clear:both; margin-bottom:0px;">
+    	<div style=" position:absolute;margin:10px 50px 0px 50px; right:0px; background-color:rgba(0,0,0,0);">
+        <button onClick="showlist()" id="buli">查看在线列表</button>
+		<input type="button" value="发送" onClick="ajaxmesend()">
+        </div>
+
+    <div id="editor"></div>
+    <script type="text/javascript">
+			var editor, html = '';
+			var config = {
+				language: 'zh-cn',
+				uiColor: '#CCCCCC',
+				toolbar: [
+					[ 'Styles', 'Format', 'Font', 'FontSize' , '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink' ],
+					['Bold', 'Italic','-', 'TextColor', 'BGColor' , '-', 'Smiley','SpecialChar']]
+				};
+			editor = CKEDITOR.appendTo( 'editor', config, html );
+			
+	</script>
+</div>
+
+<nav id="navl" style="margin:0px;padding:0px; display:none; position:relative; bottom:0px; background-color:rgba(221,221,221,0.6); border-radius:5px 5px 0px 0px;">
+<h4 style="position:relative; text-indent: 15px;">当前在线列表<a onClick="closeli()" style="cursor:pointer;background-image:url(../../pageFile/img/close.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px; height:24px; width:24px;"></a></h4>
+	<ul id="polist" style=" margin-left:0px;padding:0px;overflow-x:hidden; max-height:200px; overflow-y:scroll; min-height:96px;">
+
+    </ul>
+</nav>
+
+<div id="tip" style=" display:none;position:fixed;margin-left:-63px;padding: 5px 0px 5px 0px;left: 50%;top: 50%;margin-top: -18px;background-color:rgba(102,102,102,0.7); border-radius:5px; box-shadow:#333 2px 2px 5px; width:auto; min-height:36px; color:#FFF; text-align:center; line-height:36px; text-indent:10px;">
+
+</div>
+
+<script>
+
+var isshow=false;
+
+function showlist(){
+	if(!isshow){
+	$("#buli").text("关闭在线列表");
+	$("body").css("height","auto");
+	$("#navl").css("display","block");
+	window.scroll(0,window.document.body.scrollHeight);
+	isshow=!isshow;
+		}
+	else{closeli();}
+	
+	}
+function closeli(){
+	$("#buli").text("查看在线列表");
+	$("#navl").css("display","none");
+	$("body").css("height","100%");
+	isshow=!isshow;
+	}
+
+var tip=$("#tip");
+function tipdis(){
+	tip.css("display","none");
+	}
+function ajaxmesend(){
+	var mess= editor.getData();
+	if(mess==""){
+					tip.text("请输入需要发送的信息！");
+					tip.css("display","block");
+					window.setTimeout(tipdis,800);
+					return;
+					}
+	$.ajax({
+			type:"POST",
+			data:{'type':"sen",'mess':mess},
+			url:"discusend.php",
+			//contentType: "application/json",
+			dataType:"json",
+			//beforeSend: function(){},
+			success:function(data){
+					if(data[0]=="success"){
+						tip.text(data[1]+"       ");
+						tip.css("display","block");
+						window.setTimeout(tipdis,800);
+						editor.setData("");
+						}
+					else if(data[0]=="error"){
+						tip.text(data[1]+"       ");
+					    tip.css("display","block");
+					    window.setTimeout(tipdis,800);
+						}
+				},
+			error:function(){
+				tip.text("无法完成该请求!      ");
+				tip.css("display","block");
+				window.setTimeout(tipdis,800);
+				}//,complete:function(){}
+	});
+	}
+
+var first=true;
+var stopa=true;
+var tp='dis',tm=0;
+var settime=false;
+var sa;
+function statajax(){
+		stopa=false;sendajax();
+	}
+function stopajax(){
+		if(!stopa){
+				if(settime){settime=false;first=true;clearInterval(sa);clearInterval(sd);}
+			}
+	}
+function ajaxrun(){
+		$.ajax({
+			type:"POST",
+			data:{'type':"dis",'ftime':tm},
+			url:"function/infosql.php",
+			dataType:"json",
+			beforeSend: function(){
+				if(!settime){
+					if(!stopa)
+					{
+						settime=true;
+						sa=window.setInterval(sendajax,3000);
+						sd=window.setInterval(ajaxpeo,3000);
+						}
+					}
+				},
+			success:successfn,
+			error:function(){}
+			});
+			}
+function successfn (data){
+
+var strleft="";
+var strright="";
+if(data[0]=="error"){
+		if(data[1]=="没有数据"){/*$("#meslist").append("<div>系统提示：现在没有人发言哦~<div/>");*/}return;}
+					
+$.each(data,function(idx){
+strleft='<div style="clear:both;" name="'+data[idx].uid+'">'+
+    	'<div  class="bsdc" style="float:left; box-shadow:#000 -1px 1px 5px; border-width:1px -1px 1px 1px; border-color:#CCC; border-radius:5px;">'+
+    	'<img style="float:left; position:relative; top:3px; left:3px; border-radius:5px;" src="../../userdata/portrait/'+data[idx].portrait+'" height="48px" width="48px">'+
+		'<div style="text-align:left;clear:right;float:left;position:relative;top:-14px; margin-bottom:-15px;font-size: 14px;">'+
+        '<div style="">'+data[idx].nick+'</div>'+
+        '<div style="">'+data[idx].sendtime+'</div>'+
+		'</div>'+
+        '<div style="clear:both;float:left;position:relative;left:10px;padding-right:12px;word-break:break-all; max-width:450px;">'+data[idx].mess+'</div>'+
+        '</div>'+
+        '</div>';
+strright='<div style="clear:both;" name="'+data[idx].uid+'">'+
+    	'<div  class="bsdc" style="float:right; box-shadow:#000 1px 1px 5px; border-width:1px; border-color:#CCC; border-radius:5px;">'+
+    	'<img style="float:right; position:relative; top:3px;right:3px; border-radius:5px;" src="../../userdata/portrait/'+data[idx].portrait+'" height="48px" width="48px">'+
+		'<div style="text-align:right;clear:left;position:relative;float:right;top:-14px; margin-bottom:-15px;font-size: 14px;">'+
+        '<div style="">'+data[idx].nick+'</div>'+
+        '<div style="">'+data[idx].sendtime+'</div>'+
+		'</div>'+
+        '<div style="clear:both; position:relative;right:10px;padding-left:12px;word-break:break-all; max-width:450px; float:right;">'+data[idx].mess+'</div>'+
+      '</div>'+
+     '</div>';
+	 if(data[idx].uid==id){$("#meslist").append(strright);}
+	 else $("#meslist").append(strleft);
+	 window.scroll(0,window.document.body.scrollHeight);
+					});	
+						
+				}
+function sendajax(){
+		if(first==true)
+			{
+				tm=60*60*24*50;
+				first=false;
+				$("#meslist").text("");
+				}
+		else tm=3;
+		
+		ajaxrun();
+		}
+
+function ajaxpeo(){
+		$.ajax({
+			type:"POST",
+			//data:{'type':tp,'ftime':tm},
+			url:"discussroom.php",
+			dataType:"json",
+			success:function(data){
+				$("#polist").text("");
+				$.each(data,function(lis,obj){
+					$("#polist").append("<li name='"+data[lis].uid+"'>"+
+					"<div><img src='../../userdata/portrait/"+data[lis].portrait+"' style='height:32px;width:32px;margin-top: 6px;'>"
+					+data[lis].nick+"</div></li>");
+					});
+				
+				},
+			error:function(){}
+			});}
+
+</script>
+</body>
+</html>

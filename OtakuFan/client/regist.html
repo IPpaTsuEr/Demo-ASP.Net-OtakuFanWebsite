@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="gb2312">
+<title>注册</title>
+<link href="../css/unionstyle.css" rel="stylesheet" type="text/css">
+
+<style>
+input{
+	margin-bottom:10px;}
+</style>
+</head>
+
+<body>
+
+<div>
+<br>
+<form action="../server/regist.php" method="post" id="refor" name="refor" >
+
+<table width="320" border="0" align="center">
+    <tr>
+    <td>
+</td>
+  </tr>
+  <tr>
+    <td><input name="user_name" type="text" class="inputdi inputid_blu" placeholder="用户名" style="background-image:url(../pageFile/img/per.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+  <tr>
+    <td><input name="pas_word" type="password" class="inputdi inputid_blu" placeholder="密码" style="background-image:url(../pageFile/img/loc.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+
+    <tr>
+    <td><input name="ue_mail" type="email" class="inputdi inputid_blu" placeholder="邮箱" style="background-image:url(../pageFile/img/mil.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+  <tr>
+    <td>
+    <div>
+    <input name="ac_pro" type="checkbox" class="" id="as_login" value="1" checked>
+   接受<a href="javascript:alert('请遵守一切相关法律法规!');">用户协议</a>
+    </div>
+      </td>
+  </tr>
+  <tr>
+    <td >
+      <input name="regis_in" id="regis_in" type="button" class="butt butt_info butcolor_gre" value="确定"  style="margin-right:12px;" onClick="rNull()">
+      <input name="regis_cs" id="regis_cs" type="reset" class="butt butt_info butcolor_red" value="取消"  style="margin-right:0px;" onMouseUp="calltolo()">
+   	</td>
+  </tr>
+  <tr>
+    <td><a href="findb.html" target="_self"  class="font_info">忘记密码？点我找回</a></td>
+  </tr>
+
+</table>
+
+
+</form>
+</div>
+<script>
+function calltolo()
+{
+	location.replace("login.html");
+}
+
+
+function rNull(){
+	var fr=document.forms.item(0).elements;
+	
+		if (fr.item(0).value==""){
+			alert("用户名不能为空!");
+			document.refor.user_id.focus();
+			return false;
+		}
+		if (fr.item(1).value==""){
+			alert("密码不能为空!");
+			document.refor.pas_word.focus();
+			return false;
+		}
+
+		if (fr.item(2).value==""){
+			alert("请填写常用电子邮箱方便找回密码");
+			document.refor.ue_mail.focus();
+			return false;
+		}
+		if (!fr.item(3).checked){
+			alert("您未同意用户协议");
+			document.refor.ac_pro.focus();
+			return false;
+		}
+		document.refor.submit();
+	}
+</Script>
+</body>
+</html>

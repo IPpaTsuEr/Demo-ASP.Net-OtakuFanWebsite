@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>短消息</title>
+<script src="../../eff/js/jquery-2.0.3.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
+<script src="edit/ckeditor.js"></script>
+<script>
+	var id=$.cookie('uid');
+	var ni=$.cookie('nick');
+	var po=$.cookie('portrait');
+	//alert(id+" "+ni+" "+po)
+</script>
+<style>
+nav>ul>li{ width:100%;height:45px; display:block; line-height:45px;padding-left:20px;border-bottom: 1px solid rgb(68, 68, 68); background-color:rgba(241,241,241,0.7); line-height:45px; }
+nav>ul>li:hover{background-image:linear-gradient(to bottom, rgba(255,255,255,0.9),rgba(221,221,221,0.6) ); cursor:pointer;}
+nav>ul>h4{
+	color: rgb(0,0,0);
+	background: none repeat scroll 0% 0%;
+	background-image:linear-gradient(to bottom, rgba(255,255,255,0.95),rgba(221,221,221,0.85) );
+	/*border-bottom: 1px solid rgb(112, 112, 112);*/
+	border-radius:5px;
+	padding: 5px 5px 5px 0px;
+	font-size:18px;
+	line-height:35px;
+	position: relative;
+	height:32px;
+	}
+nav>ul>h4>a{
+	text-decoration: none;
+	position: absolute;
+	right: 5px;
+	font-size: 140%;
+	}
+#navl{
+	transform:translateX(193px);
+	-webkit-transform:translateX(193px);}
+#navl:hover{
+	transform:translateX(0px);
+	-webkit-transform:translateX(0px);}
+#shtpan{
+	transform:translateY(-23px);
+	-webkit-transform:translateY(-23px);}
+#shtpan:hover{
+	transform:translateY(0px);
+	-webkit-transform:translateY(0px);}
+section>div{
+	margin:20px 10px;
+	}
+section div>div{
+	margin:12px;}
+.bsdc{
+	background-color: rgba(224, 230, 231,0.3);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.8),rgba(221,221,221,0.4) );
+    background-repeat: repeat-x;
+	}
+.bsdc:hover {
+    background-color: rgba(5, 145, 245,0.6);
+    text-decoration: none;
+    background-position: 0px -1px;
+    transition: background-position 0.1s linear 0s;
+	background-color: rgb(5, 150, 245);
+}		
+</style>
+</head>
+
+<body onLoad="ajaxlist()" style="background-image:url(../../pageFile/img/b2.jpg); background-repeat:no-repeat; background-size:cover;background-attachment:fixed;">
+
+<div id="shtpan" style="margin-left:-180px; padding:0px;position:fixed;top:0px;left:50%; width:360px; height:30px; background-color:rgba(254,254,254,0.8); z-index:5555; border-radius:0px 0px 5px 5px; line-height:30px; text-align:center;box-shadow:rgba(0,0,0,0.5) 1px 1px 10px 1px;">
+	<span style="float:left; margin-left:50px;">短消息</span>
+	<a href="#" onClick="parent.reback('page-5')" style="float:right; margin-right:50px; text-decoration:none;">返回首页</a>
+</div>
+
+    <section style="width:100%;margin-bottom:0px;margin-top:35px; padding:0px; clear:both; min-height:400px; height:auto;background-color:rgba(254,254,254,0.8); border-radius:5px; overflow:auto;" id="meslist">
+    
+    </section>
+
+<nav id="navl" style="width:200px; height:100%;position:fixed;overflow-y:auto; overflow-x:hidden;margin:0px;padding:0px;bottom:0px; right:0px;background-color:rgba(251,251,251,0.8); border-radius:5px 5px 0px 0px; z-index:99999;">
+
+	<ul id="conlist" style=" margin-left:0px;padding:0px; margin-top:0px;">
+    	<h4 style="position:relative;text-indent: 15px; margin-top:0px;">消息记录列表</h4>	
+    
+    </ul>
+</nav>
+
+<div id="sendpanel" style="width:100%;clear:both; margin:0px;">
+    	<div style=" position:absolute;margin:10px 50px 0px 10px; right:0px; background-color:rgba(0,0,0,0);">
+		<input type="button" value="发送" onClick="ajaxsendstms()">
+        </div>
+
+    <div id="editor" ></div>
+    
+</div>
+<div id="tip" style=" display:none;position:fixed;margin-left:-63px;padding: 5px 0px 5px 0px;left: 50%;top: 50%;margin-top: -18px;background-color:rgba(102,102,102,0.7); border-radius:5px; box-shadow:#333 2px 2px 5px; width:auto; min-height:36px; color:#FFF; text-align:center; line-height:36px; text-indent:10px;">
+
+</div>
+<script>
+var editor, html = '';
+	var config = {
+				language: 'zh-cn',
+				uiColor: '#CCCCCC',
+				toolbar: [
+					[ 'Styles', 'Format', 'Font', 'FontSize' , '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink' ],
+					['Bold', 'Italic','-', 'TextColor', 'BGColor' , '-', 'Smiley','SpecialChar']
+				]};
+			editor = CKEDITOR.appendTo( 'editor', config, html );
+
+var selectid="";
+var oth=window.setInterval(ajaxmess,3000);
+var cth=window.setInterval(ajaxlist,5000);
+function ajaxlist()
+	{		
+		$.ajax({
+			type:"POST",
+			data:{'type':"list"},
+			url:"shortmess.php",
+			//contentType: "application/json",
+			dataType:"json",
+			success:function(data)
+			{
+				if(data[0]!="error"){
+				$("#conlist li").remove();
+				$.each(data,function(idx,obj){
+					$("#conlist").append(
+					"<li name='user' id='"+data[idx].fuid+"'><div>"+
+					"<img style='height:32px;width:32px;margin-top: 6px;' src='../../userdata/portrait/"+
+					data[idx].portrait+"' title='"+data[idx].nick+"'>"+
+					data[idx].nick+"</div></li>"
+					);});
+				}
+			},
+			error:function(){
+				alert("获取数据失败");
+				},
+			complete: function(){
+				$("#conlist li").on("click",function(){
+					selectid=this.id;
+					ajaxmess();
+					});
+					
+				}
+			});
+	}
+var finalstr="";
+var noda='<div style="clear:both;" name="00000002"><div class="bsdc" style="float:left; box-shadow:#000 -1px 1px 5px; border-width:1px -1px 1px 1px; border-color:#CCC; border-radius:5px;">这个好友没有发来过消息<div style="text-align:left;clear:right;float:left;position:relative;top:-14px; margin-bottom:-15px;font-size: 14px;"></div></div></div>';
+
+function ajaxmess()
+{
+		$.ajax({
+			type:"POST",
+			data:{'type':"mess",'select':selectid},
+			url:"shortmess.php",
+			dataType:"json",
+			beforeSend: function(){
+				finalstr="";
+				},
+			success:function(data)
+			{
+				if(data[0]=="error"){return;}
+				if(data[0]=="nodata"){$("#meslist").text("");return;}
+				$.each(data,function(idx,obj){
+						
+					strleft='<div style="clear:both;" name="'+data[idx].uid+'">'+
+    	'<div  class="bsdc" style="float:left; box-shadow:#000 -1px 1px 5px; border-width:1px -1px 1px 1px; border-color:#CCC; border-radius:5px;">'+
+    	'<img style="float:left; position:relative; top:3px; left:3px; border-radius:5px;" src="../../userdata/portrait/'+data[idx].portrait+'" height="48px" width="48px">'+
+		'<div style="text-align:left;clear:right;float:left;position:relative;top:-14px; margin-bottom:-15px;font-size: 14px;">'+
+        '<div style="">'+data[idx].nick+'</div>'+
+        '<div style="">'+data[idx].sendtime+'</div>'+
+		'</div>'+
+        '<div style="clear:both;float:left;position:relative;left:10px;padding-right:12px;word-break:break-all; max-width:450px;">'+data[idx].mess+'</div>'+
+        '</div>'+
+        '</div>';
+strright='<div style="clear:both;" name="'+data[idx].uid+'">'+
+    	'<div  class="bsdc" style="float:right; box-shadow:#000 1px 1px 5px; border-width:1px; border-color:#CCC; border-radius:5px;">'+
+    	'<img style="float:right; position:relative; top:3px;right:3px; border-radius:5px;" src="../../userdata/portrait/'+data[idx].portrait+'" height="48px" width="48px">'+
+		'<div style="text-align:right;clear:left;position:relative;float:right;top:-14px; margin-bottom:-15px;font-size: 14px;">'+
+        '<div style="">'+data[idx].nick+'</div>'+
+        '<div style="">'+data[idx].sendtime+'</div>'+
+		'</div>'+
+        '<div style="clear:both; position:relative;right:10px;padding-left:12px;word-break:break-all; max-width:450px; float:right;">'+data[idx].mess+'</div>'+
+      '</div>'+
+     '</div>';
+	 if(data[idx].uid==id){finalstr+=strright;}
+	 else finalstr+=strleft;
+					});
+				},
+			error:function(){alert("获取数据失败");},
+			complete: function(){
+				$("#meslist").text("");
+				$("#meslist").append(finalstr);
+				window.scroll(0,window.document.body.scrollHeight);
+				
+				}
+		});
+}
+var tip=$("#tip");
+function tipdis(){
+	tip.css("display","none");
+	}
+function ajaxsendstms()
+{
+	var dt=editor.getData();
+	$.ajax({
+		type:"POST",
+		data:{'type':"inser",'select':selectid,'data':dt},
+		url:"shortmess.php",
+		dataType:"json",
+		beforeSend: function(){
+				if(selectid=="")alert("请选择发送目标");
+			},
+		success: function(data){
+					if(data[0]=="success"){
+						tip.text(data[1]+"       ");
+						tip.css("display","block");
+						editor.setData("");
+						window.setTimeout(tipdis,800);
+						}
+					else if(data[0]=="error"){
+						tip.text(data[1]+"       ");
+					    tip.css("display","block");
+					    window.setTimeout(tipdis,800);
+						}
+			},
+		error:function(){
+				tip.text("无法完成该请求!      ");
+				tip.css("display","block");
+				window.setTimeout(tipdis,800);
+			}
+	});
+}
+
+</script>
+</body>
+</html>

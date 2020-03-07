@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>留言板</title>
+<script src="../../eff/js/jquery-2.0.3.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
+<script src="edit/ckeditor.js"></script>
+<script>
+	var id=$.cookie('uid');
+	var ni=$.cookie('nick');
+	var po=$.cookie('portrait');
+	//alert(id+" "+ni+" "+po)
+</script>
+<style>
+nav>ul>li{ width:100%;height:45px; display:block; line-height:45px;padding-left:20px;border-bottom: 1px solid rgb(68, 68, 68); background-color:rgba(241,241,241,0.7); line-height:45px; }
+nav>ul>li:hover{background-image:linear-gradient(to bottom, rgba(255,255,255,0.9),rgba(221,221,221,0.6) ); cursor:pointer;}
+nav>ul>h4{
+	color: rgb(0,0,0);
+	background: none repeat scroll 0% 0%;
+	background-image:linear-gradient(to bottom, rgba(255,255,255,0.95),rgba(221,221,221,0.85) );
+	/*border-bottom: 1px solid rgb(112, 112, 112);*/
+	border-radius:5px;
+	padding: 5px 5px 5px 0px;
+	font-size:18px;
+	line-height:35px;
+	position: relative;
+	height:32px;
+	}
+nav>ul>h4>a{
+	text-decoration: none;
+	position: absolute;
+	right: 5px;
+	font-size: 140%;
+	}
+#navl{
+	transform:translateX(193px);
+	-webkit-transform:translateX(193px);}
+#navl:hover{
+	transform:translateX(0px);
+	-webkit-transform:translateX(0px);}
+#toppan{
+	transform:translateY(-23px);
+	-webkit-transform:translateY(-23px);}
+#toppan:hover{
+	transform:translateY(0px);
+	-webkit-transform:translateY(0px);}
+section>div{
+	margin:20px 10px;
+	}
+section div>div{
+	margin:12px;}
+.bsdc{
+	background-color: rgba(224, 230, 231,0.3);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.8),rgba(221,221,221,0.4) );
+    background-repeat: repeat-x;
+	}
+.bsdc:hover {
+    background-color: rgba(5, 145, 245,0.6);
+    text-decoration: none;
+    background-position: 0px -1px;
+    transition: background-position 0.1s linear 0s;
+	background-color: rgb(5, 150, 245);
+}	
+</style>
+</head>
+
+<body onLoad="ajaxlist();" style="background-image:url(../../pageFile/img/login_bg.jpg); background-repeat:no-repeat; background-size:cover; background-attachment:fixed;">
+
+ <div id="toppan" style="margin-left:-180px; padding:0px;position:fixed;top:0px;left:50%; width:360px; height:30px; background-color:rgba(254,254,254,0.8); z-index:5555; border-radius:0px 0px 5px 5px; line-height:30px; text-align:center;box-shadow:rgba(0,0,0,0.5) 1px 1px 10px 1px;">
+	<span style="float:left; margin-left:50px;">留言板</span>
+    <a href="#" onClick="ajaxmess();ajaxlist();" style="margin-left:30px; text-decoration:none;">刷新</a>
+	<a href="#" onClick="parent.reback('page-4')" style="float:right; margin-right:40px; text-decoration:none;">返回首页</a>
+</div>
+
+
+
+    <section style="width:100%;margin-bottom:0px;margin-top:35px; padding:0px; clear:both; min-height:400px; height:auto;background-color:rgba(254,254,254,0.8); border-radius:5px; overflow:auto;" id="meslist">
+    
+    </section>
+ 
+<nav id="navl" style="width:200px; height:100%;position:fixed;overflow-y:auto; overflow-x:hidden;margin:0px;padding:0px;bottom:0px; right:0px;background-color:rgba(251,251,251,0.8); border-radius:5px 5px 0px 0px; z-index:99899;">
+
+	<ul id="conlist" style=" margin-left:0px;padding:0px; margin-top:0px;">
+    	<h4 style="position:relative;text-indent: 15px; margin-top:0px;">留言记录列表</h4>	
+    
+    </ul>
+</nav>
+
+<div id="sendpanel" style="width:100%;clear:both; margin:0px;">
+    	<div style=" position:absolute;margin:10px 50px 0px 10px; right:0px; background-color:rgba(0,0,0,0);">
+		<input type="button" value="发送" onClick="ajaxmesend()">
+        </div>
+
+    <div id="editor" ></div></div> 
+<script>
+			var editor, html = '';
+			var config = {
+				language: 'zh-cn',
+				uiColor: '#CCCCCC',
+				toolbar: [
+					[ 'Styles', 'Format', 'Font', 'FontSize' ,"-",'Smiley','SpecialChar']
+				]};
+
+	editor = CKEDITOR.appendTo( 'editor', config, html );
+
+
+var selectid;
+function ajaxlist()
+	{
+		
+		$.ajax({
+			type:"POST",
+			data:{'type':"list"},
+			url:"leavemess.php",
+			//contentType: "application/json",
+			dataType:"json",
+			beforeSend: function(){
+				$("#conlist li").remove();
+				},
+			success:function(data)
+			{
+				if(data[0]!="error"){
+
+					var dstr="";
+				$.each(data,function(idx,obj){
+					dstr+="<li name='user' id='"+
+					data[idx].fuid+"'>"+
+					"<div><img src='../../userdata/portrait/"+data[idx].portrait+"' style='height:32px;width:32px;margin-top: 6px;'>"
+					+data[idx].nick+"</div></li>";
+					});
+					$("#conlist").append(dstr);
+				}
+			},
+			error:function(){
+				alert("获取数据失败");
+				},
+			complete: function(){
+				selectid=$("#conlist li").eq(0).attr("id");
+				$("#conlist li").on("click",function(){
+					selectid=this.id;
+					ajaxmess();
+					});
+					
+				}
+			});
+	}
+function ajaxmess()
+{
+	
+	var strleft="";
+		$.ajax({
+			type:"POST",
+			data:{'type':"mess",'sele':selectid},
+			url:"leavemess.php",
+			dataType:"json",
+			beforeSend: function(){
+				strleft="";
+				},
+			success:function(data)
+			{
+				if(data[0]=="error"){return;}
+				if(data[0]=="nodata"){$("#meslist").text("");alert("没有相关的留言");return;}
+				$.each(data,function(idx,obj){
+					
+					
+strleft+='<div style="clear:both;" name="'+data[idx].uid+'">'+
+    	'<div  class="bsdc" style="float:left; box-shadow:#000 -1px 1px 5px; border-width:1px -1px 1px 1px; border-color:#CCC; border-radius:5px;">'+
+    	'<img style="float:left; position:relative; top:3px; left:3px; border-radius:5px;" src="../../userdata/portrait/'+data[idx].portrait+'" height="48px" width="48px">'+
+		'<div style="text-align:left;clear:right;float:left;position:relative;top:-12px; margin-bottom:-15px;font-size: 14px;">'+
+        '<div style="">'+data[idx].nick+'</div>'+
+        '<div style="">'+data[idx].sendtime+'</div>'+
+		'</div>'+
+        '<div style="clear:both;float:left;position:relative;left:10px;padding-right:12px;word-break:break-all; max-width:450px;">'+data[idx].mess+'</div>'+
+        '</div>'+
+        '</div>';});
+					$("#meslist").text("");
+					$("#meslist").append(strleft);
+				},
+			error:function(){alert("获取数据失败");}
+			
+		});
+}
+function ajaxmesend(){
+	var ms=editor.getData();
+	$.ajax({
+			type:"POST",
+			data:{'type':"inser",'sele':selectid,'mess':ms},
+			url:"leavemess.php",
+			dataType:"json",
+			beforeSend: function(){},
+			success:function(data)
+			{
+				alert(data[1]);
+				if(data[0]!="error")editor.setData("");
+				},
+			error:function(){
+				alert("错误");
+				}
+		});
+	}
+</script>
+</body>
+</html>

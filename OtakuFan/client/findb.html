@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="gb2312">
+<title>密码找回</title>
+<link href="../css/unionstyle.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+<style>
+input{
+	margin-bottom:10px;}
+</style>
+<div style="heigh:auto; width:320px;">
+<form action="../server/findb.php" method="post"  onSubmit="norun()">
+<br>
+<table width="320" border="0" align="center">
+    <tr >
+    <td>
+<div class="font_info font_shod_org" style="margin-bottom:16px;" >
+输入您注册时填写的以下信息
+<br>
+系统核对后将向保密邮箱发送重置后的密码。
+
+</div>
+</td>
+  </tr>
+  <tr>
+    <td><input name="user_id" type="text" class="inputdi inputid_blu" placeholder="用户名" style="background-image:url(../pageFile/img/per.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+ 
+    <tr>
+    <td><input name="ue_mail" type="email" class="inputdi inputid_blu" placeholder="保密邮箱" style="background-image:url(../pageFile/img/mil.png); background-position:left center; background-repeat:no-repeat; background-size:24px 24px;"></td>
+  </tr>
+  <tr>
+    <td>
+		<!--input name="ue_pas" type="password" class="inputdi inputid_blu" placeholder="密码"--></td>
+      </td>
+  </tr>
+  <tr>
+    <td >
+      <input name="login_in" id="login_in" type="submit" class="butt butt_info butcolor_gre" value="确定"  style="margin-right:12px;">
+      <input name="regis_in" id="regis_in" type="reset" class="butt butt_info butcolor_red" value="取消"  style="margin-right:0px;" onMouseUp="calltolo()">
+   	</td>
+  </tr>
+  <tr>
+  <br>
+    <td><a href="login.html" class="font_info">已有账号？点我登录</a></td>
+  </tr>
+
+</table>
+
+
+</form>
+</div>
+<script>
+function norun(){
+alert("暂时不提供此项服务。");
+
+	}
+function calltolo()
+{
+	location.replace("login.html");
+}
+</script>
+</body>
+</html>

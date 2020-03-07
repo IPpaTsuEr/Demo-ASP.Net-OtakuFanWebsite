@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>个人信息</title>
+<script src="../../eff/js/jquery-2.0.3.min.js"></script>
+<style>
+-#perpan{
+	transform:translateY(-23px);
+	-webkit-transform:translateY(-23px);}
+-#perpan:hover{
+	transform:translateY(0px);
+	-webkit-transform:translateY(0px);}
+		
+</style>
+</head>
+
+<body onLoad="abinfo()" style="background-image:url(../../pageFile/img/b3.jpg); background-repeat:no-repeat; background-size:cover; background-attachment:fixed;">
+
+<div id="perpan" style="margin-left:-180px; padding:0px;position:fixed;top:0px;left:50%; width:360px; height:30px; background-color:rgba(254,254,254,0.8); z-index:5555; border-radius:0px 0px 5px 5px; line-height:30px; text-align:center;box-shadow:rgba(0,0,0,0.9) 1px 1px 10px 1px;">
+	<span style="float:left; margin-left:50px;">个人中心</span>
+	<a href="#" onClick="parent.reback('page-6')" style="float:right; margin-right:50px; text-decoration:none;">返回首页</a>
+</div>
+
+<div style="margin-top:-200px; margin-left:-400px;padding:0px; height:400px; width:800px; left:50%; top:50%; position:absolute; background-color:rgba(254,254,254,0.8); border-radius:5px;box-shadow:rgba(0,0,0,1) 1px 1px 10px 1px;">
+
+<div style="width:700px; height:300px; margin:50px; padding:0px;">
+  
+    <div style=" height:auto;width:100%;">
+    	<img height="64px" width="64px" src="../../userdata/portrait/default.png" id="hdimg" title="点我更换头像" style="border-radius:5px; margin:15px;">
+    </div>
+    
+
+  <div style=" height:auto; margin:20px;">
+    <span>昵称</span>
+    <span id="mnickname" style="float:right; text-align:left;">sdfsgfsgrrgrg</span>
+    <input type="text" id="nickname" height="25px" width="320px" style=" clear:both;float:right;display:none">
+  </div>
+  
+  <div style="height:auto; margin:20px;">
+    <span>邮箱</span>
+    <span  id="memail" style="float:right; text-align:left;">ergergergerhrhh</span>
+    <input type="email" id="email"  height="25px" width="320px" style=" clear:both;float:right;display:none">
+  </div>
+  
+
+  <div style=" position:absolute;right: 0px ; margin:50px; bottom: 0px;">
+    <input type="button" value="修改" onClick="tomodify()" id="tomd" style="float:right; margin-right:20px;">
+    <div style="margin:20px;">
+    <input type="button" name="重置" style="float:right;display:none;" value="取消" id="subf" onClick="resetinfo()">
+    <input type="button" name="提交" style="float:right; margin-right:20px;display:none; clear:left;" value="确定" id="casf" onClick="modifinfo()">
+    </div>
+  </div>
+ </div> 
+</div>
+
+<script>
+var tp,portrait="",mail,nick,
+tomd=document.getElementById("tomd"),
+nickname=document.getElementById("nickname"),
+email=document.getElementById("email"),
+mnickname=document.getElementById("mnickname"),
+memail=document.getElementById("memail"),
+hdimg=document.getElementById("hdimg"),
+subf=document.getElementById("subf"),
+casf=document.getElementById("casf");
+tp="select";
+mail=email.value;
+nick=nickname.value;
+function abinfo(){
+	$.ajax({
+			type:"POST",
+			data:{'type':tp,'portrait':portrait,'mail':mail,'nick':nick},
+			url:"perinfo.php",
+			//contentType: "application/json",
+			dataType:"json",
+			success:function(data){
+				portrait=data[0].portrait;
+				hdimg.src='../../userdata/portrait/'+data[0].portrait;
+				email.value=data[0].email;
+				memail.innerHTML=data[0].email;
+				nickname.value=data[0].nick;
+				mnickname.innerHTML=data[0].nick;
+				},
+			error:function(){
+					alert("获取用户信息失败请刷新重试！")
+				}
+			});
+}
+function tomodify()
+{
+	tomd.style.display="none";
+	memail.style.display="none";
+	mnickname.style.display="none";
+	email.style.display="block";
+	nickname.style.display="block";
+	subf.style.display="block";
+	casf.style.display="block";
+}
+function resetinfo(){
+	tomd.style.display="block";
+	memail.style.display="block";
+	mnickname.style.display="block";
+	email.style.display="none";
+	nickname.style.display="none";
+	subf.style.display="none";
+	casf.style.display="none";
+	}
+function modifinfo(){
+	tp="update";
+	mail=email.value;
+	nick=nickname.value;
+	abinfo();
+	resetinfo();
+	}
+</script>
+</body>
+</html>
